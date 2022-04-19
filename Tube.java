@@ -29,9 +29,32 @@ public class Tube{
         this.isMystery=isMystery;
     }
 
-    public void drawTube(Graphics g)
+    public void drawTube(Graphics g, int x, int y)
     {
-        //TODO: draw
+        g.setColor(Color.WHITE);
+        Graphics2D g2d = (Graphics2D) g.create();
+        TubeShape ts = new TubeShape(x,y,180,25);
+        g2d.setStroke(new BasicStroke(3));
+        g2d.draw(ts);
+        g2d.dispose();
+    }
+    
+    //draws color blocks in test tubes, positions
+    // 1234 bottom to top
+    public void drawColor(Graphics g, Color c, int pos, int x, int y)
+    {
+        if (pos == 1)
+        {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setColor(c);
+            TubeShape ts = new TubeShape(x, y, 40, 25);
+            g2d.fill(ts);
+        }
+        else
+        {
+            g.setColor(c);
+            g.fillRect(x, y, 50, 40);
+        }
     }
 
     public Stack<Color> getColors(){
