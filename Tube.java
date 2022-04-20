@@ -9,10 +9,10 @@ public class Tube{
     private boolean isMystery;
     
     public Tube(Color[] colors, boolean isMystery){
-        this.colors = new Stack<Color>();
-        int numColors = 0;
-        int numBlocks = 0;
-        Color currColor = colors[0];
+        this.colors=new Stack<Color>();
+        int numColors=0;
+        int numBlocks=0;
+        Color currColor=colors[0];
         for (int i=0; i<colors.length; i++){
             if(colors[i]==null){
                 break;
@@ -31,11 +31,17 @@ public class Tube{
 
     public void drawTube(Graphics g, int x, int y)
     {
+        int currNumBlocksTmp = currNumBlocks;
+        Stack<Color> colorsTmp = colors;
+        while(!colorsTmp.isEmpty()){
+            drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+20+(40*(currNumBlocks-currNumBlocksTmp)));
+            currNumBlocksTmp--;
+        }
         g.setColor(Color.WHITE);
         Graphics2D g2d = (Graphics2D) g.create();
-        TubeShape ts = new TubeShape(x,y,180,25);
+        TubeShape tube = new TubeShape(x,y,180,25);
         g2d.setStroke(new BasicStroke(3));
-        g2d.draw(ts);
+        g2d.draw(tube);
         g2d.dispose();
     }
     
@@ -47,8 +53,8 @@ public class Tube{
         {
             Graphics2D g2d = (Graphics2D) g.create();
             g2d.setColor(c);
-            TubeShape ts = new TubeShape(x, y, 40, 25);
-            g2d.fill(ts);
+            TubeShape bottom = new TubeShape(x, y, 40, 25);
+            g2d.fill(bottom);
         }
         else
         {
@@ -93,6 +99,7 @@ public class Tube{
     {
         otherTube.getColors().push(colors.pop());
     }
+
     public boolean sameColor(Color otherColor)
     {
         if (topColor().equals(otherColor))
@@ -106,5 +113,4 @@ public class Tube{
     {
         return isMystery;
     }
-    
 }

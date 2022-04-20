@@ -4,10 +4,14 @@ public class AllLevels {
     private int numLevels;
     private int levelsCompleted;
 
-    public AllLevels(int numLevels){
-        this.numLevels = numLevels;
-        this.levels = new Level[numLevels];
+    public AllLevels(Level[] levels){
+        this.numLevels = levels.length;
+        this.levels = levels;
         this.levelsCompleted = 0;
+    }
+
+    public Level[] getLevels(){
+        return levels;
     }
 
     public int getNumLevels(){
