@@ -20,9 +20,9 @@ public class Level{
         if(numTubes==5){
             for(int i=0; i<5; i++){
                 if(i<3){
-                    tubes[i].drawTube(g,(i*100)+75,160);
+                    tubes[i].drawTube(g,(i*100)+75, 160);
                 }else{
-                    tubes[i].drawTube(g,((i-3)*100)+125,395);
+                    tubes[i].drawTube(g,((i-3)*100)+125, 395);
                 }
             }
         }else if(numTubes==7)

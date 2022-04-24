@@ -7,6 +7,9 @@ public class Tube{
     private int currNumColors;
     private int currNumBlocks;
     private boolean isMystery;
+    private boolean isSelected;
+    private int y=0;
+    private int originalY=0;
     
     public Tube(Color[] colors, boolean isMystery){
         this.colors=new Stack<Color>();
@@ -27,15 +30,50 @@ public class Tube{
         this.currNumColors=numColors;
         this.currNumBlocks=numBlocks;
         this.isMystery=isMystery;
+        this.isSelected=false;
     }
 
-    public void drawTube(Graphics g, int x, int y)
+    public void drawTube(Graphics g, int x, int y1)
     {
+        if(y==0){
+            y=y1;
+            originalY=y1;
+        }
         int currNumBlocksTmp = currNumBlocks;
-        Stack<Color> colorsTmp = colors;
-        while(!colorsTmp.isEmpty()){
-            drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+20+(40*(currNumBlocks-currNumBlocksTmp)));
-            currNumBlocksTmp--;
+        
+        Stack<Color> colorsTmp = new Stack<Color>();
+        colorsTmp.addAll(colors);
+        //mystery shows only top color rest are black 
+        if(isMystery){
+            drawColor(g,colorsTmp.peek(),currNumBlocksTmp,x,y+20);
+            colorsTmp.pop();
+            while(!colorsTmp.isEmpty()){
+                drawColor(g,Color.BLACK,currNumBlocksTmp,x,y+20+(40*(currNumBlocks-currNumBlocksTmp)));
+                colorsTmp.pop();
+                currNumBlocksTmp--;               
+            }
+        }else{
+            if(currNumBlocks==4){
+                while(!colorsTmp.isEmpty()){
+                    drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+20+(40*(currNumBlocks-currNumBlocksTmp)));
+                    currNumBlocksTmp--;
+                }
+            }else if(currNumBlocks==3){
+                while(!colorsTmp.isEmpty()){
+                    drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+60+(40*(currNumBlocks-currNumBlocksTmp)));
+                    currNumBlocksTmp--;
+                }
+            }else if(currNumBlocks==2){
+                while(!colorsTmp.isEmpty()){
+                    drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+100+(40*(currNumBlocks-currNumBlocksTmp)));
+                    currNumBlocksTmp--;
+                }
+            }else if(currNumBlocks==1){
+                while(!colorsTmp.isEmpty()){
+                    drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+140+(40*(currNumBlocks-currNumBlocksTmp)));
+                    currNumBlocksTmp--;
+                }
+            }
         }
         g.setColor(Color.WHITE);
         Graphics2D g2d = (Graphics2D) g.create();
@@ -63,6 +101,35 @@ public class Tube{
         }
     }
 
+    public void select(){
+        isSelected=true;
+        //raise
+        //y -= 20;
+    }
+
+
+    public void deselect(){
+        isSelected=false;
+        //unraise
+        //y += 20;
+    }
+
+    public boolean getIsSelected(){
+        return isSelected;
+    }
+
+    public void setY(int y){
+        this.y=y;
+    }
+
+    public int getY(){
+        return y;
+    }
+
+    public int getOriginalY(){
+        return originalY;
+    }
+
     public Stack<Color> getColors(){
         return colors;
     }
@@ -78,6 +145,10 @@ public class Tube{
     public int numBlocks(){
         return currNumBlocks;
     }
+
+    public void setNumBlocks(int n){
+        currNumBlocks+=n;
+    }
     
     public int numColors()
     {
@@ -91,13 +162,23 @@ public class Tube{
    
     public Color topColor()
     {
+        if(colors.isEmpty()){
+            return null;
+        }
         Color top = colors.peek();
         return top;
     }
 
     public void pourTo(Tube otherTube)
     {
-        otherTube.getColors().push(colors.pop());
+        Color previousColor = topColor();
+        while (!colors.isEmpty() && colors.peek().equals(previousColor) && otherTube.numBlocks()<4)
+        {
+            previousColor=colors.peek();
+            otherTube.getColors().push(colors.pop());
+            currNumBlocks--;
+            otherTube.setNumBlocks(1);
+        }
     }
 
     public boolean sameColor(Color otherColor)
