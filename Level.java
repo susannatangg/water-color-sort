@@ -8,7 +8,8 @@ public class Level{
     private boolean isMystery;
     private int numColors;
 
-    public Level(Tube[] tubes, int numColors, boolean isMystery){
+    public Level(Tube[] tubes, int numColors, boolean isMystery)
+    {
         this.isMystery = isMystery;
         this.tubes = tubes;
         this.numTubes = tubes.length;
@@ -17,25 +18,39 @@ public class Level{
     }
 
     public void drawTubes(Graphics g){
-        if(numTubes==5){
-            for(int i=0; i<5; i++){
-                if(i<3){
-                    tubes[i].drawTube(g,(i*100)+75, 160);
-                }else{
-                    tubes[i].drawTube(g,((i-3)*100)+125, 395);
+        if(numTubes==5)
+        {
+            for(int i=0; i<5; i++)
+            {
+                if(i<3)
+                {
+                    tubes[i].drawTube(g,(i*100)+75, 200);
+                    tubes[i].setTubeX(i*100+75);
+                    tubes[i].setTubeY(200);
+                }
+                else
+                {
+                    tubes[i].drawTube(g,((i-3)*100)+125, 435);
+                    tubes[i].setTubeX((i-3)*100+125);
+                    tubes[i].setTubeY(435);
                 }
             }
-        }else if(numTubes==7)
+        }
+        else if(numTubes==7)
         {
             for (int i=0; i<7; i++)
             {
                 if (i<4)
                 {
-                    tubes[i].drawTube(g, (i*85)+50, 160);
+                    tubes[i].drawTube(g, (i*85)+50, 200);
+                    tubes[i].setTubeX((i*85)+50);
+                    tubes[i].setTubeY(200);
                 }
                 else
                 {
-                    tubes[i].drawTube(g, ((i-4)*85)+90, 395);
+                    tubes[i].drawTube(g, ((i-4)*85)+90, 435);
+                    tubes[i].setTubeX(((i-4)*85)+90);
+                    tubes[i].setTubeY(435);
                 }
             }
             
@@ -46,19 +61,22 @@ public class Level{
             {
                 if (i<5)
                 {
-                    tubes[i].drawTube(g, (i*70)+35, 160);
+                    tubes[i].drawTube(g, (i*70)+35, 200);
+                    tubes[i].setTubeX((i*70)+35);
+                    tubes[i].setTubeY(200);
                 }
                 else
                 {
-                    tubes[i].drawTube(g, ((i-5)*80)+55, 395);
+                    tubes[i].drawTube(g, ((i-5)*80)+55, 435);
+                    tubes[i].setTubeX(((i-5)*80)+55);
+                    tubes[i].setTubeY(435);
                 }
-
             }
-        
         }
     }
 
-    public Tube[] getTubes(){
+    public Tube[] getTubes()
+    {
         return tubes;
     }
 
@@ -75,6 +93,11 @@ public class Level{
     {
         return numCompleteTubes;
     }
+
+    public void incrementNumCompleteTubes()
+    {
+        numCompleteTubes++;
+    }
     
     public boolean isComplete()
     {
@@ -85,7 +108,8 @@ public class Level{
         return false; 
     }
 
-    public boolean isMystery(){
+    public boolean isMystery()
+    {
         return isMystery;
     }
 }

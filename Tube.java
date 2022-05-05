@@ -3,31 +3,50 @@ import java.util.*;
 
 public class Tube{
     
-    private Stack<Color> colors;
-    private int currNumColors;
+    private Stack<ColorBlock> colors;
     private int currNumBlocks;
     private boolean isMystery;
     private boolean isSelected;
     private int y=0;
     private int originalY=0;
+    private int tubeX;
+    private int tubeY;
     
     public Tube(Color[] colors, boolean isMystery){
-        this.colors=new Stack<Color>();
-        int numColors=0;
+        this.colors=new Stack<ColorBlock>();
         int numBlocks=0;
         Color currColor=colors[0];
         for (int i=0; i<colors.length; i++){
             if(colors[i]==null){
                 break;
             }
-            this.colors.add(colors[i]);
+            if(isMystery){
+                this.colors.add(new ColorBlock(colors[i], true));
+            }else{
+                this.colors.add(new ColorBlock(colors[i], false));
+            }
             numBlocks++;
             if(i>0 && !colors[i].equals(currColor)){
                 currColor=colors[i];
-                currColor=colors[i];
             }
         }
-        this.currNumColors=numColors;
+        if(isMystery && !this.colors.isEmpty()){
+            Color topColor=this.colors.peek();
+            this.colors.peek().setIsMystery(false);
+            Stack<ColorBlock> temp = new Stack<ColorBlock>();
+            while (!this.colors.isEmpty())
+            {
+                if(this.colors.peek().equals(topColor)){
+                    temp.push(this.colors.pop());
+                    temp.peek().setIsMystery(false);
+                }else{
+                    break;
+                }
+            }
+            while(!temp.isEmpty()){
+                this.colors.push(temp.pop());
+            }
+        }
         this.currNumBlocks=numBlocks;
         this.isMystery=isMystery;
         this.isSelected=false;
@@ -41,38 +60,13 @@ public class Tube{
         }
         int currNumBlocksTmp = currNumBlocks;
         
-        Stack<Color> colorsTmp = new Stack<Color>();
+        Stack<ColorBlock> colorsTmp = new Stack<ColorBlock>();
         colorsTmp.addAll(colors);
-        //mystery shows only top color rest are black 
-        if(isMystery){
-            drawColor(g,colorsTmp.peek(),currNumBlocksTmp,x,y+20);
-            colorsTmp.pop();
+        if(currNumBlocks>0){
             while(!colorsTmp.isEmpty()){
-                drawColor(g,Color.BLACK,currNumBlocksTmp,x,y+20+(40*(currNumBlocks-currNumBlocksTmp)));
-                colorsTmp.pop();
-                currNumBlocksTmp--;               
-            }
-        }else{
-            if(currNumBlocks==4){
-                while(!colorsTmp.isEmpty()){
-                    drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+20+(40*(currNumBlocks-currNumBlocksTmp)));
-                    currNumBlocksTmp--;
-                }
-            }else if(currNumBlocks==3){
-                while(!colorsTmp.isEmpty()){
-                    drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+60+(40*(currNumBlocks-currNumBlocksTmp)));
-                    currNumBlocksTmp--;
-                }
-            }else if(currNumBlocks==2){
-                while(!colorsTmp.isEmpty()){
-                    drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+100+(40*(currNumBlocks-currNumBlocksTmp)));
-                    currNumBlocksTmp--;
-                }
-            }else if(currNumBlocks==1){
-                while(!colorsTmp.isEmpty()){
-                    drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,y+140+(40*(currNumBlocks-currNumBlocksTmp)));
-                    currNumBlocksTmp--;
-                }
+                int yCoord=y+20+(40*(4-currNumBlocks))+(40*(currNumBlocks-currNumBlocksTmp));
+                drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,yCoord);
+                currNumBlocksTmp--;
             }
         }
         g.setColor(Color.WHITE);
@@ -85,19 +79,34 @@ public class Tube{
     
     //draws color blocks in test tubes, positions
     // 1234 bottom to top
-    public void drawColor(Graphics g, Color c, int pos, int x, int y)
+    public void drawColor(Graphics g, ColorBlock c, int pos, int x, int y)
     {
         if (pos == 1)
         {
             Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setColor(c);
+            if(c.getIsMystery()){
+                g2d.setColor(Color.GRAY);
+            }
+            else {
+                g2d.setColor(c);
+            }
             TubeShape bottom = new TubeShape(x, y, 40, 25);
             g2d.fill(bottom);
         }
         else
         {
-            g.setColor(c);
+            if(c.getIsMystery()){
+                g.setColor(Color.GRAY);
+            }
+            else {
+                g.setColor(c);
+            }
             g.fillRect(x, y, 50, 40);
+        }
+        if(c.getIsMystery()){
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("SansSerif", Font.BOLD, 25));
+            g.drawString("?", x + 20, y + 28);
         }
     }
 
@@ -118,6 +127,14 @@ public class Tube{
         return isSelected;
     }
 
+    public void setTubeX(int x){
+        tubeX=x;
+    }
+
+    public void setTubeY(int y){
+        tubeY=y;
+    }
+
     public void setY(int y){
         this.y=y;
     }
@@ -126,11 +143,19 @@ public class Tube{
         return y;
     }
 
+    public int getTubeX(){
+        return tubeX;
+    }
+
+    public int getTubeY(){
+        return tubeY;
+    }
+
     public int getOriginalY(){
         return originalY;
     }
 
-    public Stack<Color> getColors(){
+    public Stack<ColorBlock> getColors(){
         return colors;
     }
 
@@ -146,18 +171,25 @@ public class Tube{
         return currNumBlocks;
     }
 
-    public void setNumBlocks(int n){
+    public void addToNumBlocks(int n){
         currNumBlocks+=n;
-    }
-    
-    public int numColors()
-    {
-        return currNumColors;
     }
     
     public boolean isComplete()
     {
-        return (isFull() && numColors() == 1);
+        if(!isFull()){
+            return false;
+        }
+        Stack<Color> colorsTmp = new Stack<Color>();
+        colorsTmp.addAll(colors);
+        Color previousColor=colorsTmp.peek();
+        while(!colorsTmp.isEmpty()){
+            if(!previousColor.equals(colorsTmp.peek())){
+                return false;
+            }
+            previousColor=colorsTmp.pop();
+        }
+        return true;
     }
    
     public Color topColor()
@@ -165,7 +197,7 @@ public class Tube{
         if(colors.isEmpty()){
             return null;
         }
-        Color top = colors.peek();
+        Color top = colors.peek().getColor();
         return top;
     }
 
@@ -174,10 +206,30 @@ public class Tube{
         Color previousColor = topColor();
         while (!colors.isEmpty() && colors.peek().equals(previousColor) && otherTube.numBlocks()<4)
         {
+            if(isMystery){
+                colors.peek().setIsMystery(false);
+            }
             previousColor=colors.peek();
             otherTube.getColors().push(colors.pop());
             currNumBlocks--;
-            otherTube.setNumBlocks(1);
+            otherTube.addToNumBlocks(1);
+        }
+        if(isMystery && !this.colors.isEmpty()){
+            Color topColor=this.colors.peek();
+            this.colors.peek().setIsMystery(false);
+            Stack<ColorBlock> temp = new Stack<ColorBlock>();
+            while (!this.colors.isEmpty())
+            {
+                if(this.colors.peek().equals(topColor)){
+                    temp.push(this.colors.pop());
+                    temp.peek().setIsMystery(false);
+                }else{
+                    break;
+                }
+            }
+            while(!temp.isEmpty()){
+                this.colors.push(temp.pop());
+            }
         }
     }
 

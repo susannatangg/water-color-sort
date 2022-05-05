@@ -42,7 +42,7 @@ public class MakeLevel {
         //5 test tubes, mystery
         Color[] colors1 = {Color.BLUE,Color.PINK,Color.YELLOW,Color.YELLOW};
         Tube tube1 = new Tube(colors1,true);
-        Color[] colors2 = {Color.YELLOW,Color.BLUE,Color.RED,Color.YELLOW};
+        Color[] colors2 = {Color.YELLOW,Color.BLUE,Color.PINK,Color.YELLOW};
         Tube tube2 = new Tube(colors2,true);
         Color[] colors3 = {Color.BLUE,Color.PINK,Color.BLUE,Color.PINK};
         Tube tube3 = new Tube(colors3,true);
