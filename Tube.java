@@ -1,17 +1,35 @@
 import java.awt.*;
 import java.util.*;
+import java.awt.geom.*;
 
+//JAVADOCS DONE
+/**
+ * This class constructs each tube. Each tube is a stack of Colors. 
+ * Each slot in the stack is a color. 
+ * The bottom of the stack is the bottom of the tube,
+ * and the top of the stack is the top of the tube. 
+ * In a regular level, all colors of the tube will be shown. 
+ * In a mystery level, only the top color of the stack will be shown. 
+ * The max number of color blocks in the tube is always 4.
+ */
 public class Tube{
     
     private Stack<ColorBlock> colors;
     private int currNumBlocks;
     private boolean isMystery;
     private boolean isSelected;
-    private int y=0;
     private int originalY=0;
-    private int tubeX;
-    private int tubeY;
+    Point2D loc;
+    Point2D originalLoc;
     
+    /**
+     * Deals with moving colorblocks when pouring 
+     * from one tube to another
+     * Deals with setting only the top colorblock to show 
+     * in a mystery level 
+     * @param colors array of colorblocks 
+     * @param isMystery determine if level is mystery or not
+     */
     public Tube(Color[] colors, boolean isMystery){
         this.colors=new Stack<ColorBlock>();
         int numBlocks=0;
@@ -52,38 +70,47 @@ public class Tube{
         this.isSelected=false;
     }
 
-    public void drawTube(Graphics g, int x, int y1)
+    /**
+     * draws the tube with specific coordinates
+     * sets the tubeshape 
+     * @param g graphics
+     * @param x x coordinate
+     * @param y y coordinate
+     */
+    public void drawTube(Graphics g, double x, double y)
     {
-        if(y==0){
-            y=y1;
-            originalY=y1;
-        }
         int currNumBlocksTmp = currNumBlocks;
-        
         Stack<ColorBlock> colorsTmp = new Stack<ColorBlock>();
         colorsTmp.addAll(colors);
         if(currNumBlocks>0){
             while(!colorsTmp.isEmpty()){
-                int yCoord=y+20+(40*(4-currNumBlocks))+(40*(currNumBlocks-currNumBlocksTmp));
+                double yCoord=y+20+(40*(4-currNumBlocks))+(40*(currNumBlocks-currNumBlocksTmp));
                 drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,yCoord);
                 currNumBlocksTmp--;
             }
         }
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(217, 217, 217));
         Graphics2D g2d = (Graphics2D) g.create();
         TubeShape tube = new TubeShape(x,y,180,25);
+        g2d.setColor(new Color(217, 217, 217));
         g2d.setStroke(new BasicStroke(3));
         g2d.draw(tube);
         g2d.dispose();
     }
     
-    //draws color blocks in test tubes, positions
-    // 1234 bottom to top
-    public void drawColor(Graphics g, ColorBlock c, int pos, int x, int y)
+    /**
+     * draws the colorblocks in the tubeshape tube
+     * @param g graphics
+     * @param c color block drawn
+     * @param pos position in the tube; position 1 is the bottom of the tube
+     * @param x x coordinate
+     * @param y y coordinate
+     */
+    public void drawColor(Graphics g, ColorBlock c, int pos, double x, double y)
     {
+        Graphics2D g2d = (Graphics2D) g.create();
         if (pos == 1)
         {
-            Graphics2D g2d = (Graphics2D) g.create();
             if(c.getIsMystery()){
                 g2d.setColor(Color.GRAY);
             }
@@ -96,85 +123,145 @@ public class Tube{
         else
         {
             if(c.getIsMystery()){
-                g.setColor(Color.GRAY);
+                g2d.setColor(Color.GRAY);
             }
             else {
-                g.setColor(c);
+                g2d.setColor(c);
             }
-            g.fillRect(x, y, 50, 40);
+            //g2d.fillRect(x, y, 50.0, 40.0);
+            g2d.fill(new Rectangle2D.Double(x,y,50,40));
         }
         if(c.getIsMystery()){
             g.setColor(Color.WHITE);
             g.setFont(new Font("SansSerif", Font.BOLD, 25));
-            g.drawString("?", x + 20, y + 28);
+            //g2d.draw(new String2D.Double("?",x+20,y+28));
+            g.drawString("?", (int)x + 20, (int)y + 28);
         }
     }
 
+    /**
+     * tube is selected
+     */
     public void select(){
         isSelected=true;
         //raise
         //y -= 20;
     }
 
-
+    /**
+     * tube is deselected
+     */
     public void deselect(){
         isSelected=false;
         //unraise
         //y += 20;
     }
 
+    /**
+     * determines if a tube is selected or not
+     * @return
+     */
     public boolean getIsSelected(){
         return isSelected;
     }
 
-    public void setTubeX(int x){
-        tubeX=x;
+    /**
+     * sets the tube's x coordinate's location
+     * @param x x coord
+     */
+    public void setTubeX(double x){
+        loc.setLocation(x,loc.getY());
     }
 
-    public void setTubeY(int y){
-        tubeY=y;
+    /**
+     * sets hte tube's y coordinate's location
+     * @param y y coord
+     */
+    public void setTubeY(double y){
+        loc.setLocation(loc.getX(),y);
     }
 
-    public void setY(int y){
-        this.y=y;
+    /**
+     * gets the tube's x coordinate location
+     * @return loc.getX() location of x
+     */
+    public double getTubeX(){
+        return loc.getX();
     }
 
-    public int getY(){
-        return y;
+    /**
+     * gets the tube's y coordinate location
+     * @return loc.getY() location of y
+     */
+    public double getTubeY(){
+        return loc.getY();
     }
 
-    public int getTubeX(){
-        return tubeX;
-    }
-
-    public int getTubeY(){
-        return tubeY;
-    }
-
+    /**
+     * gets original y coord location
+     * @return originalY location
+     */
     public int getOriginalY(){
         return originalY;
     }
 
+    /**
+     * determines original Y location
+     * @param originalY og location
+     */
+    public void setOriginalY(int originalY){
+        this.originalY=originalY;
+    }
+
+    /**
+     * stack of colorblocks
+     * gets colors in the stack
+     * @return colors in stack
+     */
     public Stack<ColorBlock> getColors(){
         return colors;
     }
 
+    /**
+     * if current number of colorblocks in the tube is 0
+     * then the tube is empty
+     * @return whether the tube is empty or not
+     */
     public boolean isEmpty(){
         return currNumBlocks == 0;
     }
 
+    /**
+     * if current number of colorblocks in tube is 4 (max capacity)
+     * the tube is full
+     * @return whether the tube is full or not
+     */
     public boolean isFull(){
         return currNumBlocks == 4;
     }
 
+    /**
+     * returns the current number of colorblocks
+     * @return current number of blocks
+     */
     public int numBlocks(){
         return currNumBlocks;
     }
 
+    /**
+     * increment number of currentnumber blocks
+     * @param n number of colorblocks to add to another
+     */
     public void addToNumBlocks(int n){
         currNumBlocks+=n;
     }
     
+    /**
+     * Determines whether a tube is complete or not.
+     * A tube is complete if it is full, not empty, 
+     * and has all of the same colors
+     * @return true/false based on completion or not 
+     */
     public boolean isComplete()
     {
         if(!isFull()){
@@ -192,6 +279,10 @@ public class Tube{
         return true;
     }
    
+    /**
+     * gets the topcolor of the tube 
+     * @return top topcolor
+     */
     public Color topColor()
     {
         if(colors.isEmpty()){
@@ -201,6 +292,12 @@ public class Tube{
         return top;
     }
 
+    /**
+     * pouring to another tube and transferring the colorblocks
+     * Deals with transferring between different stacks for both normal
+     * and mystery levels
+     * @param otherTube that colors are being poured to 
+     */
     public void pourTo(Tube otherTube)
     {
         Color previousColor = topColor();
@@ -233,6 +330,11 @@ public class Tube{
         }
     }
 
+    /**
+     * Compares the color between two different tubes
+     * @param otherColor that is being compared to current
+     * @return false if colors are not the same
+     */
     public boolean sameColor(Color otherColor)
     {
         if (topColor().equals(otherColor))
@@ -242,6 +344,10 @@ public class Tube{
         return false;
     }
 
+    /**
+     * Mystery level or not
+     * @return whether a level is a mystery level or not
+     */
     public boolean isMystery()
     {
         return isMystery;

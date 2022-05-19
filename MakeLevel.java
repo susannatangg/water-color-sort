@@ -1,8 +1,16 @@
 import java.awt.*;
-
+//JAVA DOCS DONE
+/**
+ * Creates all of the Levels. Each level is an array of tubes. 
+ * Each tube is a Stack of Colors. 
+ * We call MakeLevel in Main to create all of the Levels.
+ */
 public class MakeLevel {
 
-    //5, 5, 5m, 7, 7, 7m, 9, 9, 9m, 9, 9, 9m
+    /**
+     * Generates level 1 with 5 tubes
+     * @return level level1
+     */
     public static Level level1(){
         //5 tubes
         //tube 1
@@ -20,6 +28,10 @@ public class MakeLevel {
         return level;
     }
 
+    /**
+     * Generates level 2 with 5 test tubes
+     * @return level level2
+     */
     public static Level level2()
     {
         //5 test tubes
@@ -37,6 +49,10 @@ public class MakeLevel {
         return level;
     }
 
+    /**
+     * Generates level 3 with 5 test tubes, it is a mystery level
+     * @return level level3
+     */
     public static Level level3()
     {
         //5 test tubes, mystery
@@ -54,6 +70,10 @@ public class MakeLevel {
         return level;
     }
 
+    /**
+     * generates level with 7 tubes
+     * @return level level7
+     */
     public static Level level4(){
         //7 tubes
         Color[] colors1 = {Color.BLUE,Color.PINK,Color.GREEN,Color.GREEN};
@@ -74,6 +94,10 @@ public class MakeLevel {
         return level;
     }
 
+    /**
+     * generates level with 7 tubes
+     * @return level level5
+     */
     public static Level level5(){
         //7 tubes
         Color[] colors1 = {Color.RED,Color.GREEN,Color.GREEN,Color.GREEN};
@@ -94,6 +118,10 @@ public class MakeLevel {
         return level;
     }
 
+    /**
+     * Generates level with 7 tubes, is a mystery level
+     * @return level level6
+     */
     public static Level level6()
     {
         //7 tubes, mystery level
@@ -115,6 +143,10 @@ public class MakeLevel {
         return level;
     }
     
+    /**
+     * 
+     * @return
+     */
     public static Level level7(){
         //9 tubes
         Color[] colors1 = {Color.BLUE,Color.PINK,Color.GREEN,Color.RED};
@@ -139,6 +171,10 @@ public class MakeLevel {
         return level;
     }
 
+    /**
+     * generates level with 9 tubes
+     * @return level level8
+     */
     public static Level level8()
     {
         //9 tubes
@@ -165,6 +201,10 @@ public class MakeLevel {
         return level;
     }
 
+    /**
+     * generates level with 9 tubes, is mystery level
+     * @return level level9
+     */
     public static Level level9()
     {
         //9 tubes mystery
@@ -192,6 +232,10 @@ public class MakeLevel {
         
     }
 
+    /**
+     * generates level with 9 tubes
+     * @return level level10
+     */
     public static Level level10(){
         //9 tubes
         Color[] colors1 = {Color.GRAY,Color.BLUE,Color.BLUE,Color.BLUE};
@@ -215,7 +259,10 @@ public class MakeLevel {
         Level level = new Level(tubes,7,false);
         return level;
     }
-
+    /**
+     * generates level with 9 tubes
+     * @return level level11
+     */
     public static Level level11(){
         //9 tubes
         Color[] colors1 = {Color.ORANGE,Color.YELLOW,Color.GREEN,Color.ORANGE};
@@ -240,6 +287,11 @@ public class MakeLevel {
         return level;
     }
     
+    /**
+     * generates level with 9 tubes, mystery level
+     * last level in the game
+     * @return level level12
+     */
     public static Level level12()
     {
         //9 tubes, mystery
