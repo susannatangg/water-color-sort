@@ -17,13 +17,14 @@ public class TubeShape extends Path2D.Float{
      * @param height height of tube
      * @param radius radius of tube
      */
-    public TubeShape(double x,double y, int height, int radius) {
+    public TubeShape(double x,double y, int height, int radiusX, int radiusY) {
+        int width=2*radiusX;
         moveTo(x, y);
-        lineTo(50+x, y);
-        lineTo(50+x, height-radius+y);
-        curveTo(50+x, height-radius+y, 50+x, height+y, 50-radius+x, height+y);
-        curveTo(radius+x, height+y, x, height+y, x, height-radius+y);
-        lineTo(x, height-radius+y);
+        lineTo(width+x, y);
+        lineTo(width+x, height-radiusY+y);
+        curveTo(width+x, height-radiusY+y, width+x, height+y, width-radiusX+x, height+y);
+        curveTo(radiusX+x, height+y, x, height+y, x, height-radiusY+y);
+        lineTo(x, height-radiusY+y);
         closePath();
     }
 }

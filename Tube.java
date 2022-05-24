@@ -21,6 +21,13 @@ public class Tube{
     private int originalY=0;
     Point2D loc;
     Point2D originalLoc;
+    int angle=0;
+    Color otherColor;
+    int topColorHeight=40;
+    boolean drawLast=false;
+    boolean drawSecondLast=false;
+    Color otherTubeTopColor;
+    Tube pourToTube;
     
     /**
      * Deals with moving colorblocks when pouring 
@@ -83,19 +90,29 @@ public class Tube{
         Stack<ColorBlock> colorsTmp = new Stack<ColorBlock>();
         colorsTmp.addAll(colors);
         if(currNumBlocks>0){
+            double yCoord=y+20+(40*(4-currNumBlocks))+(40*(currNumBlocks-currNumBlocksTmp));
+            drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,yCoord+(40-topColorHeight),topColorHeight);
+            currNumBlocksTmp--;
             while(!colorsTmp.isEmpty()){
-                double yCoord=y+20+(40*(4-currNumBlocks))+(40*(currNumBlocks-currNumBlocksTmp));
-                drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,yCoord);
+                yCoord=y+20+(40*(4-currNumBlocks))+(40*(currNumBlocks-currNumBlocksTmp));
+                drawColor(g,colorsTmp.pop(),currNumBlocksTmp,x,yCoord,40);
                 currNumBlocksTmp--;
             }
         }
+        AffineTransform at = AffineTransform.getRotateInstance(
+                Math.toRadians(0),loc.getX()+50,loc.getY());
+            at.rotate(Math.toRadians(angle),loc.getX()+50,loc.getY());
         g.setColor(new Color(217, 217, 217));
         Graphics2D g2d = (Graphics2D) g.create();
-        TubeShape tube = new TubeShape(x,y,180,25);
+        TubeShape tube = new TubeShape(x,y,180,25,25);
         g2d.setColor(new Color(217, 217, 217));
         g2d.setStroke(new BasicStroke(3));
-        g2d.draw(tube);
+        g2d.draw(at.createTransformedShape(tube));
         g2d.dispose();
+        if(angle>90){
+            g.setColor(topColor());
+            g.fillRect((int)loc.getX()+48,(int)loc.getY(),4,180-(pourToTube.numBlocks()*40)+(50+topColorHeight));
+        }
     }
     
     /**
@@ -106,19 +123,34 @@ public class Tube{
      * @param x x coordinate
      * @param y y coordinate
      */
-    public void drawColor(Graphics g, ColorBlock c, int pos, double x, double y)
+    public void drawColor(Graphics g, ColorBlock c, int pos, double x, double y, int height)
     {
         Graphics2D g2d = (Graphics2D) g.create();
-        if (pos == 1)
+        AffineTransform at = AffineTransform.getRotateInstance(
+                Math.toRadians(0),loc.getX()+50,loc.getY());
+            at.rotate(Math.toRadians(angle),loc.getX()+50,loc.getY());
+        if (pos == 1 && !(topColorHeight==0 && currNumBlocks==1))
         {
-            if(c.getIsMystery()){
-                g2d.setColor(Color.GRAY);
+            if(currNumBlocks==1 && topColorHeight<25){
+                if(c.getIsMystery()){
+                    g2d.setColor(Color.GRAY);
+                }
+                else {
+                    g2d.setColor(c);
+                }
+                double radiusX=Math.sqrt(625-((25-topColorHeight)*(25-topColorHeight)));
+                TubeShape bottom = new TubeShape(x+(25-radiusX), y, topColorHeight, (int)radiusX, topColorHeight);
+                g2d.fill(at.createTransformedShape(bottom));
+            }else{
+                if(c.getIsMystery()){
+                    g2d.setColor(Color.GRAY);
+                }
+                else {
+                    g2d.setColor(c);
+                }
+                TubeShape bottom = new TubeShape(x, y, height, 25, 25);
+                g2d.fill(at.createTransformedShape(bottom));
             }
-            else {
-                g2d.setColor(c);
-            }
-            TubeShape bottom = new TubeShape(x, y, 40, 25);
-            g2d.fill(bottom);
         }
         else
         {
@@ -128,15 +160,36 @@ public class Tube{
             else {
                 g2d.setColor(c);
             }
-            //g2d.fillRect(x, y, 50.0, 40.0);
-            g2d.fill(new Rectangle2D.Double(x,y,50,40));
+            g2d.fill(at.createTransformedShape(new Rectangle2D.Double(x,y,50,height)));
         }
-        if(c.getIsMystery()){
+        if(c.getIsMystery() && angle==0){
             g.setColor(Color.WHITE);
             g.setFont(new Font("SansSerif", Font.BOLD, 25));
-            //g2d.draw(new String2D.Double("?",x+20,y+28));
             g.drawString("?", (int)x + 20, (int)y + 28);
         }
+    }
+
+    /**
+     * gets the angle
+     * @return the angle
+     */
+    public int getAngle(){
+        return angle;
+    }
+
+    /**
+     * sets top color height
+     * @param height
+     */
+    public void setTopColorHeight(int n){
+        topColorHeight=n;
+    }
+
+    /**
+     * changes the angle
+     */
+    public void setAngle(int n){
+        angle=n;
     }
 
     /**
@@ -301,19 +354,20 @@ public class Tube{
     public void pourTo(Tube otherTube)
     {
         Color previousColor = topColor();
-        while (!colors.isEmpty() && colors.peek().equals(previousColor) && otherTube.numBlocks()<4)
+        while (!colors.isEmpty() && colors.peek().equals(previousColor) /*&& otherTube.numBlocks()<4*/)
         {
-            if(isMystery){
-                colors.peek().setIsMystery(false);
-            }
+            // if(isMystery){
+            //     colors.peek().setIsMystery(false);
+            // }
             previousColor=colors.peek();
-            otherTube.getColors().push(colors.pop());
+            colors.pop();
+            //otherTube.getColors().push(colors.pop());
             currNumBlocks--;
-            otherTube.addToNumBlocks(1);
+            //otherTube.addToNumBlocks(1);
         }
         if(isMystery && !this.colors.isEmpty()){
             Color topColor=this.colors.peek();
-            this.colors.peek().setIsMystery(false);
+            //this.colors.peek().setIsMystery(false);
             Stack<ColorBlock> temp = new Stack<ColorBlock>();
             while (!this.colors.isEmpty())
             {
@@ -328,6 +382,41 @@ public class Tube{
                 this.colors.push(temp.pop());
             }
         }
+    }
+
+    public void addBlocks(Tube otherTube){
+        Color previousColor = topColor();
+        //int currNumBlocksTmp=currNumBlocks;
+        Stack<ColorBlock> colorsTmp = new Stack<ColorBlock>();
+        colorsTmp.addAll(colors);
+        while (!colorsTmp.isEmpty() && colorsTmp.peek().equals(previousColor) && otherTube.numBlocks()<4)
+        {
+            // if(isMystery){
+            //     colorsTmp.peek().setIsMystery(false);
+            // }
+            previousColor=colorsTmp.peek();
+            otherTube.getColors().push(colorsTmp.pop());
+            //currNumBlocksTmp--;
+            otherTube.addToNumBlocks(1);
+        }
+        // if(isMystery && !colorsTmp.isEmpty()){
+        //     Color topColor=colorsTmp.peek();
+        //     colorsTmp.peek().setIsMystery(false);
+        //     Stack<ColorBlock> temp = new Stack<ColorBlock>();
+        //     while (!colorsTmp.isEmpty())
+        //     {
+        //         if(colorsTmp.peek().equals(topColor)){
+        //             temp.push(colorsTmp.pop());
+        //             temp.peek().setIsMystery(false);
+        //         }else{
+        //             break;
+        //         }
+        //     }
+        //     while(!temp.isEmpty()){
+        //         colorsTmp.push(temp.pop());
+        //     }
+        // }
+        otherTube.topColorHeight=0;
     }
 
     /**

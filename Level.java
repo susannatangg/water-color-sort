@@ -38,8 +38,17 @@ public class Level{
     public void drawTubes(Graphics g){
         if(numTubes==5)
         {
+            int lastTubeIndex=0;
+            int secondLastTubeIndex=1;
             for(int i=0; i<5; i++)
             {
+                if(tubes[i].drawLast){
+                    lastTubeIndex=i;
+                    continue;
+                }else if(tubes[i].drawSecondLast){
+                    secondLastTubeIndex=i;
+                    continue;
+                }
                 if(i<3)
                 {
                     if(tubes[i].loc==null){
@@ -59,11 +68,56 @@ public class Level{
                     tubes[i].drawTube(g,tubes[i].getTubeX(),tubes[i].getTubeY());
                 }
             }
+            if(secondLastTubeIndex<3)
+            {
+                if(tubes[secondLastTubeIndex].loc==null){
+                    tubes[secondLastTubeIndex].loc=new Point(secondLastTubeIndex*100+75,200);
+                    tubes[secondLastTubeIndex].setOriginalY(200);
+                    tubes[secondLastTubeIndex].originalLoc=new Point(secondLastTubeIndex*100+75,200);
+                }
+                tubes[secondLastTubeIndex].drawTube(g,tubes[secondLastTubeIndex].getTubeX(),tubes[secondLastTubeIndex].getTubeY());
+            }
+            else
+            {
+                if(tubes[secondLastTubeIndex].loc==null){
+                    tubes[secondLastTubeIndex].loc=new Point((secondLastTubeIndex-3)*100+125,435);
+                    tubes[secondLastTubeIndex].setOriginalY(435);
+                    tubes[secondLastTubeIndex].originalLoc=new Point((secondLastTubeIndex-3)*100+125,435);
+                }
+                tubes[secondLastTubeIndex].drawTube(g,tubes[secondLastTubeIndex].getTubeX(),tubes[secondLastTubeIndex].getTubeY());
+            }
+            if(lastTubeIndex<3)
+            {
+                if(tubes[lastTubeIndex].loc==null){
+                    tubes[lastTubeIndex].loc=new Point(lastTubeIndex*100+75,200);
+                    tubes[lastTubeIndex].setOriginalY(200);
+                    tubes[lastTubeIndex].originalLoc=new Point(lastTubeIndex*100+75,200);
+                }
+                tubes[lastTubeIndex].drawTube(g,tubes[lastTubeIndex].getTubeX(),tubes[lastTubeIndex].getTubeY());
+            }
+            else
+            {
+                if(tubes[lastTubeIndex].loc==null){
+                    tubes[lastTubeIndex].loc=new Point((lastTubeIndex-3)*100+125,435);
+                    tubes[lastTubeIndex].setOriginalY(435);
+                    tubes[lastTubeIndex].originalLoc=new Point((lastTubeIndex-3)*100+125,435);
+                }
+                tubes[lastTubeIndex].drawTube(g,tubes[lastTubeIndex].getTubeX(),tubes[lastTubeIndex].getTubeY());
+            }
         }
         else if(numTubes==7)
         {
+            int lastTubeIndex=0;
+            int secondLastTubeIndex=1;
             for (int i=0; i<7; i++)
             {
+                if(tubes[i].drawLast){
+                    lastTubeIndex=i;
+                    continue;
+                }else if(tubes[i].drawSecondLast){
+                    secondLastTubeIndex=i;
+                    continue;
+                }
                 if (i<4)
                 {
                     if(tubes[i].loc==null){
@@ -78,17 +132,61 @@ public class Level{
                     if(tubes[i].loc==null){
                         tubes[i].loc=new Point(((i-4)*85)+90,435);
                         tubes[i].setOriginalY(435);
-                        tubes[i].originalLoc=new Point(((i-4)*85)+90,200);
+                        tubes[i].originalLoc=new Point(((i-4)*85)+90,435);
                     }
                     tubes[i].drawTube(g,tubes[i].getTubeX(),tubes[i].getTubeY());
                 }
             }
-            
+            if (secondLastTubeIndex<4)
+            {
+                if(tubes[secondLastTubeIndex].loc==null){
+                    tubes[secondLastTubeIndex].loc=new Point((secondLastTubeIndex*85)+50,200);
+                    tubes[secondLastTubeIndex].setOriginalY(200);
+                    tubes[secondLastTubeIndex].originalLoc=new Point((secondLastTubeIndex*85)+50,200);
+                }
+                tubes[secondLastTubeIndex].drawTube(g,tubes[secondLastTubeIndex].getTubeX(),tubes[secondLastTubeIndex].getTubeY());
+            }
+            else
+            {
+                if(tubes[secondLastTubeIndex].loc==null){
+                    tubes[secondLastTubeIndex].loc=new Point(((secondLastTubeIndex-4)*85)+90,435);
+                    tubes[secondLastTubeIndex].setOriginalY(435);
+                    tubes[secondLastTubeIndex].originalLoc=new Point(((secondLastTubeIndex-4)*85)+90,435);
+                }
+                tubes[secondLastTubeIndex].drawTube(g,tubes[secondLastTubeIndex].getTubeX(),tubes[secondLastTubeIndex].getTubeY());
+            }
+            if (lastTubeIndex<4)
+            {
+                if(tubes[lastTubeIndex].loc==null){
+                    tubes[lastTubeIndex].loc=new Point((lastTubeIndex*85)+50,200);
+                    tubes[lastTubeIndex].setOriginalY(200);
+                    tubes[lastTubeIndex].originalLoc=new Point((lastTubeIndex*85)+50,200);
+                }
+                tubes[lastTubeIndex].drawTube(g,tubes[lastTubeIndex].getTubeX(),tubes[lastTubeIndex].getTubeY());
+            }
+            else
+            {
+                if(tubes[lastTubeIndex].loc==null){
+                    tubes[lastTubeIndex].loc=new Point(((lastTubeIndex-4)*85)+90,435);
+                    tubes[lastTubeIndex].setOriginalY(435);
+                    tubes[lastTubeIndex].originalLoc=new Point(((lastTubeIndex-4)*85)+90,435);
+                }
+                tubes[lastTubeIndex].drawTube(g,tubes[lastTubeIndex].getTubeX(),tubes[lastTubeIndex].getTubeY());
+            }
         }
         else if(numTubes==9)
         {
+            int lastTubeIndex=0;
+            int secondLastTubeIndex=1;
             for (int i=0; i<9; i++)
             {
+                if(tubes[i].drawLast){
+                    lastTubeIndex=i;
+                    continue;
+                }else if(tubes[i].drawSecondLast){
+                    secondLastTubeIndex=i;
+                    continue;
+                }
                 if (i<5)
                 {
                     if(tubes[i].loc==null){
@@ -107,6 +205,42 @@ public class Level{
                     }
                     tubes[i].drawTube(g,tubes[i].getTubeX(),tubes[i].getTubeY());
                 }
+            }
+            if (secondLastTubeIndex<5)
+            {
+                if(tubes[secondLastTubeIndex].loc==null){
+                    tubes[secondLastTubeIndex].loc=new Point((secondLastTubeIndex*70)+35,200);
+                    tubes[secondLastTubeIndex].setOriginalY(200);
+                    tubes[secondLastTubeIndex].originalLoc=new Point((secondLastTubeIndex*70)+35,200);
+                }
+                tubes[secondLastTubeIndex].drawTube(g,tubes[secondLastTubeIndex].getTubeX(),tubes[secondLastTubeIndex].getTubeY());
+            }
+            else
+            {
+                if(tubes[secondLastTubeIndex].loc==null){
+                    tubes[secondLastTubeIndex].loc=new Point(((secondLastTubeIndex-5)*80)+55,435);
+                    tubes[secondLastTubeIndex].setOriginalY(435);
+                    tubes[secondLastTubeIndex].originalLoc=new Point(((secondLastTubeIndex-5)*80)+55,435);
+                }
+                tubes[secondLastTubeIndex].drawTube(g,tubes[secondLastTubeIndex].getTubeX(),tubes[secondLastTubeIndex].getTubeY());
+            }
+            if (lastTubeIndex<5)
+            {
+                if(tubes[lastTubeIndex].loc==null){
+                    tubes[lastTubeIndex].loc=new Point((lastTubeIndex*70)+35,200);
+                    tubes[lastTubeIndex].setOriginalY(200);
+                    tubes[lastTubeIndex].originalLoc=new Point((lastTubeIndex*70)+35,200);
+                }
+                tubes[lastTubeIndex].drawTube(g,tubes[lastTubeIndex].getTubeX(),tubes[lastTubeIndex].getTubeY());
+            }
+            else
+            {
+                if(tubes[lastTubeIndex].loc==null){
+                    tubes[lastTubeIndex].loc=new Point(((lastTubeIndex-5)*80)+55,435);
+                    tubes[lastTubeIndex].setOriginalY(435);
+                    tubes[lastTubeIndex].originalLoc=new Point(((lastTubeIndex-5)*80)+55,435);
+                }
+                tubes[lastTubeIndex].drawTube(g,tubes[lastTubeIndex].getTubeX(),tubes[lastTubeIndex].getTubeY());
             }
         }
     }

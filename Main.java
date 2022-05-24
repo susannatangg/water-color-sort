@@ -31,6 +31,8 @@ public class Main extends JPanel implements Runnable{
     private double currX,currY;
     private int step = 0;
     private int currI=-1;
+    private int angle=0;
+    private int incrementColorHeight=0;
 
     /**
      * make 12 individual levels and set currentpage to gamepage
@@ -65,7 +67,7 @@ public class Main extends JPanel implements Runnable{
     public Main(){
         initData();
         start();
-        currLevelIndex=0;
+        currLevelIndex=2;
         currLevel=allLevels.getLevels()[currLevelIndex];
         currNumTubes=currLevel.getNumTubes();
         setFocusable(true);
@@ -98,7 +100,7 @@ public class Main extends JPanel implements Runnable{
                                 {
                                     fromTubeIndex=currSelectedTubeIndex;
                                     toTubeIndex=i;
-                                    toX=currLevel.getTubes()[i].getTubeX()-70;
+                                    toX=currLevel.getTubes()[i].getTubeX()-35;
                                     toY=currLevel.getTubes()[i].getTubeY()-50;
                                     double fromX=currSelectedTube.getTubeX();
                                     double fromY=currSelectedTube.getTubeY();
@@ -109,6 +111,12 @@ public class Main extends JPanel implements Runnable{
                                     hypotenuse=Math.sqrt((dy*dy)+(dx*dx));
                                     currI=i;
                                     step++;
+                                    currLevel.getTubes()[currSelectedTubeIndex].drawLast=true;
+                                    currLevel.getTubes()[i].drawLast=false;
+                                    currLevel.getTubes()[i].drawSecondLast=false;
+                                    currLevel.getTubes()[i].otherTubeTopColor=currSelectedTube.getColors().peek();
+                                    currLevel.getTubes()[currSelectedTubeIndex].pourToTube=currLevel.getTubes()[i];
+                                    currLevel.getTubes()[currSelectedTubeIndex].addBlocks(currLevel.getTubes()[i]);
                                     pourTube();
                                 }else{
                                     currLevel.getTubes()[currSelectedTubeIndex].deselect();
@@ -190,6 +198,7 @@ public class Main extends JPanel implements Runnable{
     /**
      * GUI component, draws finishedpage,
      * restartbutton, level number
+     * @param g graphics
      */
     public void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -292,7 +301,9 @@ public class Main extends JPanel implements Runnable{
      * pouring tube animation 
      * step 0 = don't move
      * step 1 = move to the position of other tube
-     * step 2 = move tube back
+     * step 2 = tilt
+     * step 3 = untilt
+     * step 4 = move back
      */
     public void pourTube(){
         millis=2;
@@ -303,21 +314,67 @@ public class Main extends JPanel implements Runnable{
             currY+=incrementY;
             currLevel.getTubes()[fromTubeIndex].setTubeX(currX);
             currLevel.getTubes()[fromTubeIndex].setTubeY(currY);
+            currLevel.getTubes()[currI].otherTubeTopColor=currSelectedTube.getColors().peek().getColor();
             repaint();
         }
         else if(step==1 && (int)currY==toY){
             step=2;
+            // currLevel.getTubes()[currSelectedTubeIndex].drawLast=false;
+            // currLevel.getTubes()[currSelectedTubeIndex].drawSecondLast=true;
+            // currLevel.getTubes()[currI].drawSecondLast=false;
+            // currLevel.getTubes()[currI].drawLast=true;
         }
 
-        if(step==2 && currI!=-1){
-            currLevel.getTubes()[currSelectedTubeIndex].pourTo(currLevel.getTubes()[currI]);
+        if(step==2 && angle!=120){
+            millis=5;
+            angle++;
+            currLevel.getTubes()[fromTubeIndex].setAngle(angle);
+            repaint();
+        }else if(step==2 && angle==120){
             step=3;
+        }
+
+        if(step==3 && angle!=0){
+            millis=5;
+            angle--;
+            currLevel.getTubes()[fromTubeIndex].setAngle(angle);
+            repaint();
+        }else if(step==3 && angle==0){
+            step=4;
+            incrementColorHeight=0;
+            // currLevel.getTubes()[currSelectedTubeIndex].drawSecondLast=false;
+            // currLevel.getTubes()[currSelectedTubeIndex].drawLast=true;
+            // currLevel.getTubes()[currI].drawLast=false;
+            // currLevel.getTubes()[currI].drawSecondLast=true;
+        }
+        
+        //if its in the process of tilting
+        if((step == 2 || step == 3) && incrementColorHeight<40 && angle>90){
+            //System.out.println(currLevel.getTubes()[fromTubeIndex].numBlocksSameColor);
+            // if(incrementColorHeight%40==0 && incrementColorHeight!=0){
+            //     incrementColorHeight=0;
+            //     //currLevel.getTubes()[currSelectedTubeIndex].popColors();
+            //     //currLevel.getTubes()[currI].addToNumBlocks(1);
+            //     //currLevel.getTubes()[currSelectedTubeIndex].addToNumBlocks(-1);
+            // }
+            incrementColorHeight++;
+            //decrease height of fromTube
+            currLevel.getTubes()[currI].setTopColorHeight(incrementColorHeight);
+            //increase height of toTube
+            currLevel.getTubes()[currSelectedTubeIndex].setTopColorHeight(40-(incrementColorHeight));
+            //repaint();
+        }
+
+        if(step==4 && currI!=-1){
+            currLevel.getTubes()[currSelectedTubeIndex].pourTo(currLevel.getTubes()[currI]);
+            currLevel.getTubes()[currSelectedTubeIndex].setTopColorHeight(40);
+            step=5;
         }
         
         if(currSelectedTube!=null){
             double origX=currLevel.getTubes()[fromTubeIndex].originalLoc.getX();
             double origY=currLevel.getTubes()[fromTubeIndex].originalLoc.getY();
-            if(step==3 && (int)currY!=(int)origY){
+            if(step==5 && (int)currY!=(int)origY){
                 dy=currY-origY;
                 dx=currX-origX;
                 hypotenuse=Math.sqrt((dy*dy)+(dx*dx));
@@ -328,10 +385,15 @@ public class Main extends JPanel implements Runnable{
                 currLevel.getTubes()[fromTubeIndex].setTubeX(currX);
                 currLevel.getTubes()[fromTubeIndex].setTubeY(currY);
                 repaint();
-            }else if(step==3 && (int)currY==origY){
+            }else if(step==5 && (int)currY==origY){
                 step=0;
                 currSelectedTube=null;
                 currLevel.getTubes()[currSelectedTubeIndex].deselect();
+                // currLevel.getTubes()[currI].drawLast=false;
+                // currLevel.getTubes()[currI].drawSecondLast=false;
+                // currLevel.getTubes()[currSelectedTubeIndex].drawSecondLast=false;
+                // currLevel.getTubes()[currSelectedTubeIndex].drawLast=false;
+                currLevel.getTubes()[currSelectedTubeIndex].drawLast=false;
                 if(currLevel.getTubes()[currI].isComplete()){
                     currLevel.incrementNumCompleteTubes();
                 }
