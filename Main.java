@@ -67,7 +67,7 @@ public class Main extends JPanel implements Runnable{
     public Main(){
         initData();
         start();
-        currLevelIndex=2;
+        currLevelIndex=0;
         currLevel=allLevels.getLevels()[currLevelIndex];
         currNumTubes=currLevel.getNumTubes();
         setFocusable(true);
