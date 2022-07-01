@@ -295,9 +295,9 @@ public class MakeLevel {
     public static Level level12()
     {
         //9 tubes, mystery
-        Color[] colors1 = {Color.BLUE,Color.ORANGE,Color.GRAY,Color.CYAN};
+        Color[] colors1 = {Color.BLUE,Color.ORANGE,Color.YELLOW,Color.CYAN};
         Tube tube1 = new Tube(colors1,true);
-        Color[] colors2 = {Color.GREEN,Color.BLUE,Color.GRAY,Color.BLUE};
+        Color[] colors2 = {Color.GREEN,Color.BLUE,Color.YELLOW,Color.BLUE};
         Tube tube2 = new Tube(colors2,true);
         Color[] colors3 = {Color.ORANGE,Color.CYAN,Color.PINK,Color.PINK};
         Tube tube3 = new Tube(colors3,true);
@@ -307,7 +307,7 @@ public class MakeLevel {
         Tube tube5 = new Tube(colors5,true);
         Color[] colors6 = {Color.CYAN,Color.GREEN,Color.RED,Color.ORANGE};
         Tube tube6 = new Tube(colors6,true);
-        Color[] colors7 = {Color.GRAY,Color.RED,Color.PINK,Color.GRAY};
+        Color[] colors7 = {Color.YELLOW,Color.RED,Color.PINK,Color.YELLOW};
         Tube tube7 = new Tube(colors7,true);
         Color[] colorsNull = {null,null,null,null};
         Tube tube8 = new Tube(colorsNull,true);
